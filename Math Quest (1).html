@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математика для Карінки</title>
+    <style>
+        :root {
+            --color-primary: #32b8c6;
+            --color-primary-hover: #2da3b0;
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #f8f9fa;
+            --color-surface: #ffffff;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            background: var(--color-surface);
+            border-radius: 15px;
+            padding: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: calc(100vh - 10px);
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 1.5em;
+            color: var(--color-primary);
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin: 3px 0;
+        }
+
+        .subtitle {
+            color: var(--color-text-light);
+            font-size: 0.8em;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            background: var(--color-surface);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--color-text);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 36px;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .quiz-section {
+            margin-bottom: 30px;
+        }
+
+        .problem {
+            background: var(--color-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .problem-text {
+            font-size: 2.5em;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .answer-input {
+            width: 130px;
+            padding: 10px;
+            font-size: 1.3em;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            transition: border-color 0.3s ease;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+            appearance: none;
+        }
+        
+        .answer-input::-webkit-outer-spin-button,
+        .answer-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        .answer-input::placeholder {
+            font-size: 0.7em;
+            font-weight: normal;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(50, 184, 198, 0.1);
+        }
+
+        .answer-input.correct {
+            border-color: var(--color-success);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .answer-input.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 36px;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(50, 184, 198, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .stats {
+            background: var(--color-bg);
+            padding: 6px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 6px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .stat-label {
+            color: var(--color-text-light);
+            font-size: 0.65em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-top: 2px;
+        }
+
+        .feedback {
+            text-align: center;
+            margin-top: 8px;
+            min-height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-message {
+            font-size: 1em;
+            font-weight: 600;
+            animation: bounce 0.6s ease;
+        }
+
+        .feedback-correct {
+            color: var(--color-success);
+        }
+
+        .feedback-incorrect {
+            color: var(--color-error);
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .celebration {
+            font-size: 2em;
+            animation: spin 0.6s ease;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(0.5); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .difficulty-selector {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .difficulty-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--color-text);
+            font-weight: 600;
+            font-size: 0.8em;
+        }
+
+        .difficulty-options {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 6px 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 32px;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .difficulty-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .difficulty-btn:hover {
+            border-color: var(--color-primary);
+        }
+
+        .history-panel {
+            background: var(--color-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .history-title {
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .toggle-history-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            pointer-events: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            min-height: 44px;
+        }
+
+        .toggle-history-btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .history-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .history-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            font-size: 0.9em;
+        }
+
+        .history-item.correct {
+            border-left-color: var(--color-success);
+        }
+
+        .history-item.incorrect {
+            border-left-color: var(--color-error);
+        }
+
+        .finish-screen {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), #22c55e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(50, 184, 198, 0.3);
+        }
+
+        .finish-text {
+            font-size: 1.5em;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .restart-btn {
+            margin-top: 25px;
+        }
+
+        .error-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-popup.show {
+            display: flex;
+        }
+
+        .error-popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .error-popup-title {
+            font-size: 2em;
+            color: var(--color-error);
+            margin-bottom: 15px;
+        }
+
+        .error-popup-message {
+            font-size: 1.2em;
+            color: var(--color-text);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .error-popup-correct-answer {
+            background: var(--color-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            color: var(--color-text-light);
+        }
+
+        .error-popup-correct-answer strong {
+            color: var(--color-primary);
+            font-size: 1.3em;
+        }
+
+        .error-popup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .container {
+                padding: 20px;
+                max-width: 100%;
+                border-radius: 15px;
+            }
+
+            .header {
+                margin-bottom: 25px;
+            }
+
+            .title {
+                font-size: 1.8em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .emoji {
+                font-size: 2.5em;
+            }
+
+            .mode-selector {
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .mode-btn {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+
+            .difficulty-selector {
+                margin-bottom: 20px;
+            }
+
+            .difficulty-options {
+                gap: 8px;
+            }
+
+            .difficulty-btn {
+                padding: 12px 16px;
+                font-size: 0.9em;
+            }
+
+            .problem {
+                padding: 25px 15px;
+                margin-bottom: 20px;
+            }
+
+            .problem-text {
+                font-size: 2.5em;
+                letter-spacing: 2px;
+                margin-bottom: 20px;
+            }
+
+            .input-group {
+                margin-bottom: 15px;
+            }
+
+            .answer-input {
+                width: 140px;
+                padding: 15px;
+                font-size: 1.4em;
+            }
+
+            .answer-input::placeholder {
+                font-size: 0.7em;
+            }
+
+            .button-group {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 1em;
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 10px;
+                margin-bottom: 20px;
+            }
+
+            .stat-item {
+                padding: 12px;
+            }
+
+            .stat-label {
+                font-size: 0.7em;
+            }
+
+            .stat-value {
+                font-size: 1.3em;
+            }
+
+            .feedback-message {
+                font-size: 1.1em;
+            }
+
+            .history-panel {
+                padding: 15px;
+                max-height: 250px;
+            }
+
+            .history-header {
+                margin-bottom: 12px;
+            }
+
+            .toggle-history-btn {
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .problem-text {
+                font-size: 2em;
+            }
+
+            .answer-input {
+                width: 120px;
+                font-size: 1.2em;
+            }
+
+            .btn {
+                font-size: 0.9em;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="emoji">🧮</div>
+            <div class="title">Математика для Карінки</div>
+            <div class="subtitle">Вчимо математику разом з Карінкою!</div>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" data-mode="addition">
+                ➕ Додавання
+            </button>
+            <button class="mode-btn" data-mode="subtraction">
+                ➖ Віднімання
+            </button>
+        </div>
+
+        <div class="difficulty-selector">
+            <label class="difficulty-label">Рівень складності:</label>
+            <div class="difficulty-options">
+                <button class="difficulty-btn active" data-difficulty="easy">Легко</button>
+                <button class="difficulty-btn" data-difficulty="super">Супер!</button>
+            </div>
+        </div>
+
+        <div id="quiz" class="quiz-section">
+            <div class="problem">
+                <div class="problem-text" id="problem">7 + 3 = ?</div>
+                <div class="input-group">
+                    <input type="number" class="answer-input" id="answer" min="0" max="10" placeholder="Відповідь" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" data-action="check">Перевірити</button>
+                </div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Правильно</div>
+                <div class="stat-value" id="correct">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Всього</div>
+                <div class="stat-value" id="total">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Процент</div>
+                <div class="stat-value" id="percentage">0%</div>
+            </div>
+        </div>
+
+        <div class="history-panel" id="historyPanel" style="display: none;">
+            <div class="history-header">
+                <div class="history-title">📋 Історія рішень</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="toggle-history-btn" data-action="clear-history" style="background: var(--color-error); font-size: 0.85em; padding: 6px 12px;">🗑️ Очистити</button>
+                    <button class="toggle-history-btn" data-action="toggle-history">Сховати</button>
+                </div>
+            </div>
+            <div class="history-list" id="historyListLive">
+                <!-- История будет вставлена здесь -->
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 8px;">
+            <button class="btn btn-secondary" data-action="toggle-history" id="showHistoryBtn" style="font-size: 0.85em; padding: 6px 12px;">📋 Показати історію</button>
+        </div>
+
+        <div id="finishScreen" style="display: none; max-height: 90vh; overflow-y: auto;" class="finish-screen">
+            <div style="font-size: 3em;">🎉</div>
+            <div class="score-circle" id="finalScore">10/10</div>
+            <div class="finish-text">Молодець!</div>
+            <div style="color: var(--color-text-light); margin-bottom: 20px; font-size: 1.1em;">
+                Ти розв'язав(ла) всі приклади! Відпочини трохи і грай ще!
+            </div>
+            
+            <div style="margin-top: 30px; text-align: left; background: var(--color-bg); padding: 20px; border-radius: 12px;">
+                <h3 style="color: var(--color-primary); margin-bottom: 15px; text-align: center; font-size: 1em;">📋 Історія відповідей</h3>
+                <div id="historyList" style="display: grid; gap: 10px;">
+                    <!-- История будет вставлена здесь -->
+                </div>
+            </div>
+            
+            <button class="btn btn-primary restart-btn" data-action="restart">🔄 Грати ще раз</button>
+        </div>
+    </div>
+
+    <!-- Попап для неправильного ответа -->
+    <div class="error-popup" id="errorPopup">
+        <div class="error-popup-content">
+            <div class="error-popup-title">❌ Помилка!</div>
+            <div class="error-popup-message">
+                Ти помилився(ла). Спробуй вирішити приклад ще раз!
+            </div>
+            <div class="error-popup-buttons">
+                <button class="btn btn-primary" data-action="retry-question">🔄 Спробувати ще раз</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const QUESTIONS_PER_QUIZ = 10;
+        let currentMode = 'addition';
+        let currentDifficulty = 'easy';
+        let correctCount = 0;
+        let totalCount = 0;
+        let answered = false;
+        let currentNum1 = 0;
+        let currentNum2 = 0;
+        let currentNum3 = 0;
+        let currentAnswer = 0;
+        let answerHistory = [];
+        let historyVisible = false;
+        let lastNum1 = null;
+        let lastNum2 = null;
+        let lastNum3 = null;
+        let lastMode = null;
+        let lastDifficulty = null;
+
+        function setMode(mode, element) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            resetStats();
+            generateQuestion();
+        }
+
+        function setDifficulty(difficulty, element) {
+            currentDifficulty = difficulty;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            // Скидаємо попередній приклад при зміні складності
+            lastNum1 = null;
+            lastNum2 = null;
+            lastNum3 = null;
+            lastDifficulty = null;
+            resetStats();
+            generateQuestion();
+        }
+
+        function getRange() {
+            // Для режиму "Легко" використовуємо числа від 1 до 9
+            return { min: 1, max: 9 };
+        }
+
+        function generateQuestion() {
+            const range = getRange();
+            let attempts = 0;
+            const maxAttempts = 50;
+            currentNum3 = 0; // Скидаємо третє число
+            
+            do {
+                if (currentDifficulty === 'super') {
+                    // Режим "Супер" - 3 числа
+                    if (currentMode === 'addition') {
+                        // Генеруємо 3 числа для додавання, сума <= 10
+                        // Спочатку вибираємо перше число (1-8, щоб залишилося місце для двох інших)
+                        currentNum1 = Math.floor(Math.random() * 8) + 1;
+                        // Друге число: максимум (10 - перше - 1), мінімум 1
+                        const maxNum2 = 10 - currentNum1 - 1;
+                        currentNum2 = Math.floor(Math.random() * Math.min(9, maxNum2)) + 1;
+                        // Третє число: решта до 10
+                        const remaining = 10 - currentNum1 - currentNum2;
+                        currentNum3 = Math.floor(Math.random() * remaining) + 1;
+                        currentAnswer = currentNum1 + currentNum2 + currentNum3;
+                    } else {
+                        // Віднімання з 3 чисел: a - b - c, результат >= 0
+                        // Перше число від 3 до 10
+                        currentNum1 = Math.floor(Math.random() * 8) + 3;
+                        // Друге число менше першого
+                        currentNum2 = Math.floor(Math.random() * (currentNum1 - 1)) + 1;
+                        // Третє число менше різниці перших двох
+                        const remaining = currentNum1 - currentNum2;
+                        currentNum3 = Math.floor(Math.random() * remaining) + 1;
+                        currentAnswer = currentNum1 - currentNum2 - currentNum3;
+                    }
+                } else {
+                    // Режим "Легко" - 2 числа
+                    currentNum1 = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                    
+                    if (currentMode === 'addition') {
+                        // Для додавання: сума не більше 10
+                        const maxNum2 = 10 - currentNum1;
+                        if (maxNum2 < range.min) {
+                            currentNum1 = Math.floor(Math.random() * (10 - range.min)) + range.min;
+                            currentNum2 = Math.floor(Math.random() * (10 - currentNum1 - range.min + 1)) + range.min;
+                        } else {
+                            const num2Max = Math.min(range.max, maxNum2);
+                            currentNum2 = Math.floor(Math.random() * (num2Max - range.min + 1)) + range.min;
+                        }
+                        currentAnswer = currentNum1 + currentNum2;
+                    } else {
+                        // Для віднімання: друге число не більше першого
+                        currentNum2 = Math.floor(Math.random() * currentNum1) + 1;
+                        currentAnswer = currentNum1 - currentNum2;
+                    }
+                }
+                
+                attempts++;
+                // Перевіряємо, чи не співпадає з попереднім прикладом
+                if (attempts >= maxAttempts || 
+                    (currentNum1 !== lastNum1 || currentNum2 !== lastNum2 || 
+                     currentNum3 !== lastNum3 || currentMode !== lastMode || 
+                     currentDifficulty !== lastDifficulty)) {
+                    break;
+                }
+            } while (true);
+            
+            // Зберігаємо поточний приклад як попередній
+            lastNum1 = currentNum1;
+            lastNum2 = currentNum2;
+            lastNum3 = currentNum3;
+            lastMode = currentMode;
+            lastDifficulty = currentDifficulty;
+            
+            // Відображаємо приклад
+            if (currentDifficulty === 'super') {
+                if (currentMode === 'addition') {
+                    document.getElementById('problem').textContent = `${currentNum1} + ${currentNum2} + ${currentNum3} = ?`;
+                } else {
+                    document.getElementById('problem').textContent = `${currentNum1} − ${currentNum2} − ${currentNum3} = ?`;
+                }
+            } else {
+                if (currentMode === 'addition') {
+                    document.getElementById('problem').textContent = `${currentNum1} + ${currentNum2} = ?`;
+                } else {
+                    document.getElementById('problem').textContent = `${currentNum1} − ${currentNum2} = ?`;
+                }
+            }
+
+            clearFeedback();
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').classList.remove('correct', 'incorrect');
+            answered = false;
+            document.getElementById('answer').focus();
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+
+            const input = document.getElementById('answer');
+            const userAnswer = parseInt(input.value);
+
+            if (input.value === '') {
+                showFeedback('Будь ласка, введи відповідь!', 'incorrect');
+                return;
+            }
+
+            answered = true;
+            totalCount++;
+
+            if (userAnswer === currentAnswer) {
+                correctCount++;
+                input.classList.add('correct');
+                showFeedback('✅ Молодець! Правильно!', 'correct');
+                playSuccessSound();
+                recordAnswer(true, userAnswer);
+                setTimeout(() => {
+                    if (totalCount >= QUESTIONS_PER_QUIZ) {
+                        finishQuiz();
+                    } else {
+                        generateQuestion();
+                    }
+                }, 800);
+            } else {
+                input.classList.add('incorrect');
+                showFeedback(`❌ Неправильно! Правильна відповідь: ${currentAnswer}`, 'incorrect');
+                recordAnswer(false, userAnswer);
+                // Показуємо попап замість автоматичного переходу
+                showErrorPopup();
+            }
+
+            updateStats();
+        }
+
+        function skipQuestion() {
+            if (answered) return;
+            totalCount++;
+            answered = true;
+            showFeedback(`⏭️ Пропущено. Правильна відповідь: ${currentAnswer}`, 'incorrect');
+            recordAnswer(false, null);
+            updateStats();
+            setTimeout(() => {
+                if (totalCount >= QUESTIONS_PER_QUIZ) {
+                    finishQuiz();
+                } else {
+                    generateQuestion();
+                }
+            }, 800);
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `<div class="feedback-message feedback-${type}">${message}</div>`;
+        }
+
+        function clearFeedback() {
+            document.getElementById('feedback').innerHTML = '';
+        }
+
+        function updateStats() {
+            document.getElementById('correct').textContent = correctCount;
+            document.getElementById('total').textContent = totalCount;
+            const percentage = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+            document.getElementById('percentage').textContent = percentage + '%';
+        }
+
+        function resetStats() {
+            correctCount = 0;
+            totalCount = 0;
+            answered = false;
+            // Історія зберігається в localStorage і не очищається при новому квізі
+            historyVisible = false;
+            lastNum1 = null;
+            lastNum2 = null;
+            lastNum3 = null;
+            lastMode = null;
+            lastDifficulty = null;
+            document.getElementById('historyPanel').style.display = 'none';
+            document.getElementById('showHistoryBtn').textContent = '📋 Показати історію';
+            updateStats();
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('finishScreen').style.display = 'none';
+        }
+
+        function saveHistoryToStorage() {
+            try {
+                localStorage.setItem('mathQuestHistory', JSON.stringify(answerHistory));
+            } catch (e) {
+                console.log('Не вдалося зберегти історію:', e);
+            }
+        }
+
+        function loadHistoryFromStorage() {
+            try {
+                const saved = localStorage.getItem('mathQuestHistory');
+                if (saved) {
+                    answerHistory = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.log('Не вдалося завантажити історію:', e);
+                answerHistory = [];
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('Ви впевнені, що хочете очистити всю історію?')) {
+                answerHistory = [];
+                saveHistoryToStorage();
+                if (historyVisible) {
+                    updateHistoryDisplay();
+                }
+                // Оновлюємо історію на екрані завершення, якщо вона відкрита
+                const finishScreen = document.getElementById('finishScreen');
+                if (finishScreen.style.display !== 'none') {
+                    displayHistory();
+                }
+            }
+        }
+
+        function recordAnswer(isCorrect, userAnswer) {
+            const operator = currentMode === 'addition' ? '+' : '−';
+            let problem;
+            if (currentDifficulty === 'super') {
+                problem = `${currentNum1} ${operator} ${currentNum2} ${operator} ${currentNum3}`;
+            } else {
+                problem = `${currentNum1} ${operator} ${currentNum2}`;
+            }
+            
+            answerHistory.push({
+                problem: problem,
+                userAnswer: userAnswer,
+                correctAnswer: currentAnswer,
+                isCorrect: isCorrect,
+                timestamp: new Date().toISOString()
+            });
+            
+            saveHistoryToStorage();
+            
+            if (historyVisible) {
+                updateHistoryDisplay();
+            }
+        }
+
+        function toggleHistory() {
+            historyVisible = !historyVisible;
+            const panel = document.getElementById('historyPanel');
+            const btn = document.getElementById('showHistoryBtn');
+            
+            if (historyVisible) {
+                panel.style.display = 'block';
+                btn.textContent = '📋 Сховати історію';
+                updateHistoryDisplay();
+            } else {
+                panel.style.display = 'none';
+                btn.textContent = '📋 Показати історію';
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyListLive');
+            historyList.innerHTML = '';
+
+            if (answerHistory.length === 0) {
+                historyList.innerHTML = '<p style="color: var(--color-text-light); text-align: center;">Поки немає записів</p>';
+                return;
+            }
+
+            // Показуємо останні 20 записів (від новіших до старіших)
+            const recentHistory = answerHistory.slice(-20).reverse();
+            
+            recentHistory.forEach((entry) => {
+                const statusIcon = entry.isCorrect ? '✅' : '❌';
+                const statusColor = entry.isCorrect ? 'var(--color-success)' : 'var(--color-error)';
+                const userAnswerText = entry.userAnswer !== null ? entry.userAnswer : 'пропущено';
+                
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${entry.isCorrect ? 'correct' : 'incorrect'}`;
+                historyItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="color: var(--color-primary); font-weight: bold;">${entry.problem} = ${entry.correctAnswer}</span>
+                            <br>
+                            <span style="color: var(--color-text-light); font-size: 0.85em;">Твоя відповідь: <strong>${userAnswerText}</strong></span>
+                        </div>
+                        <div style="font-size: 1.2em;">${statusIcon}</div>
+                    </div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+
+            if (answerHistory.length === 0) {
+                historyList.innerHTML = '<p style="color: var(--color-text-light);">Немає записів</p>';
+                return;
+            }
+
+            answerHistory.forEach((entry, index) => {
+                const statusIcon = entry.isCorrect ? '✅' : '❌';
+                const statusText = entry.isCorrect ? 'Правильно' : 'Неправильно';
+                const statusColor = entry.isCorrect ? 'var(--color-success)' : 'var(--color-error)';
+                const userAnswerText = entry.userAnswer !== null ? entry.userAnswer : 'пропущено';
+                
+                const historyItem = document.createElement('div');
+                historyItem.style.cssText = `
+                    background: white;
+                    padding: 12px;
+                    border-radius: 8px;
+                    border-left: 4px solid ${statusColor};
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 0.95em;
+                `;
+                historyItem.innerHTML = `
+                    <div>
+                        <span style="color: var(--color-primary); font-weight: bold; font-size: 1.1em;">${entry.problem} = ?</span>
+                        <br>
+                        <span style="color: var(--color-text-light); font-size: 0.85em;">Твоя відповідь: <strong>${userAnswerText}</strong></span>
+                        ${!entry.isCorrect ? `<br><span style="color: var(--color-text-light); font-size: 0.85em;">Правильна: <strong style="color: var(--color-primary);">${entry.correctAnswer}</strong></span>` : ''}
+                    </div>
+                    <div style="color: ${statusColor}; font-weight: bold; font-size: 1.3em;">${statusIcon}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('finishScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `${correctCount}/${QUESTIONS_PER_QUIZ}`;
+            displayHistory();
+            playCelebrationSound();
+        }
+
+        function showErrorPopup() {
+            const popup = document.getElementById('errorPopup');
+            popup.classList.add('show');
+        }
+
+        function hideErrorPopup() {
+            const popup = document.getElementById('errorPopup');
+            popup.classList.remove('show');
+        }
+
+        function retryQuestion() {
+            hideErrorPopup();
+            // Скидаємо стан для повторної спроби
+            answered = false;
+            totalCount--; // Віднімаємо один рахунок, бо помилкову відповідь вже зараховано
+            const input = document.getElementById('answer');
+            input.value = '';
+            input.classList.remove('incorrect');
+            clearFeedback();
+            updateStats(); // Оновлюємо статистику
+            input.focus();
+        }
+
+        function restartQuiz() {
+            resetStats();
+            hideErrorPopup();
+            generateQuestion();
+        }
+
+        function playSuccessSound() {
+            // Створюємо простий звук за допомогою Web Audio API
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                // Браузер не підтримує Web Audio API
+            }
+        }
+
+        function playCelebrationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [800, 900, 1000, 1100];
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        oscillator.frequency.value = freq;
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                    }, index * 100);
+                });
+            } catch (e) {
+                // Браузер не підтримує Web Audio API
+            }
+        }
+
+        // Ініціалізація при завантаженні
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistoryFromStorage();
+            generateQuestion();
+            
+            // Додаємо обробники подій для всіх кнопок через делегування
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                
+                // Обробка кнопок режиму
+                if (btn.classList.contains('mode-btn')) {
+                    const mode = btn.getAttribute('data-mode');
+                    if (mode) {
+                        setMode(mode, btn);
+                    }
+                    return;
+                }
+                
+                // Обробка кнопок складності
+                if (btn.classList.contains('difficulty-btn')) {
+                    const difficulty = btn.getAttribute('data-difficulty');
+                    if (difficulty) {
+                        setDifficulty(difficulty, btn);
+                    }
+                    return;
+                }
+                
+                // Обробка дій через data-action
+                const action = btn.getAttribute('data-action');
+                if (action) {
+                    switch(action) {
+                        case 'check':
+                            checkAnswer();
+                            break;
+                        case 'toggle-history':
+                            toggleHistory();
+                            break;
+                        case 'clear-history':
+                            clearHistory();
+                            break;
+                        case 'restart':
+                            restartQuiz();
+                            break;
+                        case 'retry-question':
+                            retryQuestion();
+                            break;
+                    }
+                    return;
+                }
+            });
+            
+            // Також додаємо обробники для touch подій
+            document.addEventListener('touchend', function(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                
+                // Симулюємо click подію
+                const clickEvent = new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                btn.dispatchEvent(clickEvent);
+            }, { passive: true });
+            
+            document.getElementById('answer').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
